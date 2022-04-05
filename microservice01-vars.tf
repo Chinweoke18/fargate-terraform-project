@@ -1,3 +1,7 @@
+variable "microservice_name" {
+  description = "name of the microservice to be deployed"
+  default     = "microservice01"
+}
 
 variable "app_image" {
   description = "Docker image to run in the ECS cluster"
@@ -28,10 +32,38 @@ variable "fargate_memory" {
   default     = "2048"
 }
 
-variable "microservice_name" {
-  default     = "microservice01"
-}
-
 variable "microservice_environment" {
   default     = "prod"
 }
+
+variable "repo_id" {
+  default = "chinweoke18/hellp-app"
+}
+
+variable "buildspec_java" {
+  default = "scripts/buildspec-java.yaml"
+}
+
+variable "buildspec_node" {
+  default = "scripts/buildspec-node.yaml"
+}
+
+variable "code_repo" {
+  default = "https://github.com/Chinweoke18/hellp-app.git"
+}
+
+variable "repo_branch" {
+  default = "main"
+}
+
+variable "tech" {
+  default = "node"
+}
+
+variable "createdby" {
+  default = "chinweoke"
+}
+
+# variable "ecr_repo_url" {
+#   default = "aws_ecr_repository.ecs.repository_url"
+# }

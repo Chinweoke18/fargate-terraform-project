@@ -2,7 +2,7 @@
 
 variable "aws_region" {
   description = "The AWS region things are created in"
-  default     = "us-east-2"
+  default     = "us-east-1"
 }
 
 
@@ -22,4 +22,20 @@ variable "app_name" {
 
 variable "app_environment" {
   default     = "prod"
+}
+
+variable "codepipeline_role" {
+  default = "scripts/codepipeline_role.json"
+}
+
+variable "codepipeline_role_policy" {
+  default = "scripts/codepipeline_role_policy.json"
+}
+
+variable "codebuild_role" {
+  default = "scripts/codebuild_role.json"
+}
+
+variable "codebuild_role_policy" {
+  default = "scripts/codebuild_role_policy.json"
 }

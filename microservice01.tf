@@ -57,8 +57,13 @@ data "template_file" "cb_app" {
   template = file("./scripts/microservice01.json.tpl")
 
   vars = {
+    microservice_name = var.microservice_name
+    image_id       = (jsondecode(data.external.tags_of_most_recently_pushed_image.result.tags) == null ? "latest" : jsondecode(data.external.tags_of_most_recently_pushed_image.result.tags)[0])
     app_image      = var.app_image
+    ecr_repo_url   = aws_ecr_repository.ecs.repository_url
     app_port       = var.app_port
+    app_name       = var.app_name
+    app_environment= var.app_environment
     fargate_cpu    = var.fargate_cpu
     fargate_memory = var.fargate_memory
     aws_region     = var.aws_region
@@ -68,7 +73,7 @@ data "template_file" "cb_app" {
 
 #ECS task definition
 resource "aws_ecs_task_definition" "app" {
-  family                   = "cb-app-task"
+  family                   = "${var.microservice_name}-${var.microservice_environment}-tsk"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -80,7 +85,7 @@ resource "aws_ecs_task_definition" "app" {
 
 #ECS service
 resource "aws_ecs_service" "main" {
-  name            = "cb-service"
+  name            = "${var.microservice_name}-${var.microservice_environment}-svc"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = var.app_count
@@ -94,7 +99,7 @@ resource "aws_ecs_service" "main" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.app.id
-    container_name   =  "cb-app"
+    container_name   =  "${var.microservice_name}"
     container_port   = var.app_port
   }
 
@@ -191,4 +196,6 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
 
   alarm_actions = [aws_appautoscaling_policy.down.arn]
 }
+
+
 
